@@ -41,7 +41,7 @@ export default function Dashboard() {
       setTotal(result.total || 0)
       setLastUpdate(new Date())
     } catch (error) {
-      console.error("Erreur de récupération des données:", error)
+      console.error("Erreur de récupération des données: ", error)
     }
   }
 
