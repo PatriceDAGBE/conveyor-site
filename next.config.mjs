@@ -9,8 +9,6 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  basePath: '/conveyor-site',        // ← important pour GitHub Pages
-  assetPrefix: '/conveyor-site/',    // ← important aussi
 }
 
 export default nextConfig

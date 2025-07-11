@@ -8,7 +8,7 @@ const LogoTRC = ({ width = 300, height = 100, showText = false }) => {
     <div style={logoContainerStyle}>
       <Link href="/">
         <Image
-          src="/conveyor-site/trc_logo.svg"
+          src="/trc_logo.svg"
           alt="TRC Logo"
           width={width}
           height={height}
