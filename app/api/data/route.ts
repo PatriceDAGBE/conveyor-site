@@ -1,49 +1,47 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 
-const colors = ["RED", "GREEN", "BLUE", "YELLOW"]
+let lastColor: string | null = null
 
-// Données simulées pour tests (facultatif mais utile si tu veux un reset)
-let counts = {
-  RED: 0,
-  GREEN: 0,
-  BLUE: 0,
-  YELLOW: 0,
-}
-// {color : "RED"}
-// GET – Retourne une couleur aléatoire simulant un objet trié
-export async function GET() {
+// POST – Reçoit une couleur JSON {"color": "RED"} depuis ROS2 ou autre
+export async function POST(request: NextRequest) {
   try {
-    // Simulation aléatoire d'une couleur "triée"
-    const randomIndex = Math.floor(Math.random() * colors.length)
-    const color = colors[randomIndex]
+    const body = await request.json()
+    const color = body.color?.toUpperCase()
 
-    // Pour garder un état global si tu veux du debug ou un reset
-    counts[color as keyof typeof counts]++
+    if (!color) {
+      return NextResponse.json({ error: "Aucune couleur fournie" }, { status: 400 })
+    }
 
-    return NextResponse.json(
-      { color },
-      {
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
-        },
-      }
-    )
+    lastColor = color
+
+    return NextResponse.json({ color }, {
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0",
+      },
+    })
   } catch (error) {
-    console.error("Erreur API:", error)
-    return NextResponse.json({ error: "Erreur lors de la récupération des données" }, { status: 500 })
+    return NextResponse.json({ error: "Erreur dans la requête" }, { status: 400 })
   }
 }
 
-// POST – Réinitialise les compteurs (optionnel pour tests)
-export async function POST() {
-  counts = {
-    RED: 0,
-    GREEN: 0,
-    BLUE: 0,
-    YELLOW: 0,
+// GET – Retourne la dernière couleur reçue
+export async function GET() {
+  if (!lastColor) {
+    return NextResponse.json({ error: "Aucune couleur enregistrée" }, { status: 404 })
   }
 
-  return NextResponse.json({ message: "Données réinitialisées", data: counts })
+  const response = NextResponse.json({ color: lastColor }, {
+    headers: {
+      "Cache-Control": "no-cache, no-store, must-revalidate",
+      Pragma: "no-cache",
+      Expires: "0",
+    },
+  })
+
+  // Vider après réponse
+  lastColor = null
+
+  return response
 }
