@@ -15,8 +15,6 @@ interface DashboardData {
   YELLOW: number
 }
 
-const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
-
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData>({
     RED: 0,
@@ -31,7 +29,7 @@ export default function Dashboard() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${basePath}/api/data`)
+      const response = await fetch("/api/data")
       const result = await response.json() // Ex: { color: "RED" }
       const color = result.color?.toUpperCase()
 
