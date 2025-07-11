@@ -6,14 +6,15 @@ const LogoTekbot = ({ width = 80, height = 50, showText = true }) => {
     <div style={logoContainerStyle}>
       <Link href="/" style={linkStyle}>
         {showText && <span style={textStyle}>Tekbot Robotics</span>}
-        <Image
-          src="/logo_tekbot.png" 
-          alt="Tekbot Logo"
-          width={width}
-          height={height}
-          priority={true}
-          style={imageStyle}
-        />
+        <div style={{ width, height, position: 'relative' }}>
+          <Image
+            src="/logo_tekbot.png"
+            alt="Tekbot Logo"
+            fill
+            priority
+            style={{ objectFit: 'contain' }}
+          />
+        </div>
       </Link>
     </div>
   );
@@ -37,7 +38,7 @@ const imageStyle = {
 
 const textStyle = {
   marginRight: '1.2rem',
-  fontSize: '2.2rem',
+  fontSize: '1.2rem',
   fontWeight: 'bold',
 };
 
