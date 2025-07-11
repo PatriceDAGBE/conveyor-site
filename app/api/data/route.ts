@@ -1,31 +1,20 @@
 import { NextRequest, NextResponse } from "next/server"
 
-// Stockage global temporaire (en mémoire du serveur)
-let counts = {
-  RED: 0,
-  GREEN: 0,
-  BLUE: 0,
-  YELLOW: 0,
-  total: 0,
-}
-
 let lastColor: string | null = null
 
-// POST – Reçoit une couleur {"color": "RED"} (ex: depuis ROS2)
-export async function POST(req: NextRequest) {
+// POST – Reçoit une couleur JSON {"color": "RED"} depuis ROS2 ou autre
+export async function POST(request: NextRequest) {
   try {
-    const body = await req.json()
+    const body = await request.json()
     const color = body.color?.toUpperCase()
 
-    if (!color || !["RED", "GREEN", "BLUE", "YELLOW"].includes(color)) {
-      return NextResponse.json({ error: "Couleur invalide" }, { status: 400 })
+    if (!color) {
+      return NextResponse.json({ error: "Aucune couleur fournie" }, { status: 400 })
     }
 
-    counts[color as keyof typeof counts] += 1
-    counts.total += 1
     lastColor = color
 
-    return NextResponse.json({ success: true }, {
+    return NextResponse.json({ color }, {
       headers: {
         "Cache-Control": "no-cache, no-store, must-revalidate",
         Pragma: "no-cache",
@@ -37,20 +26,22 @@ export async function POST(req: NextRequest) {
   }
 }
 
-// GET – Récupère l’état global actuel
+// GET – Retourne la dernière couleur reçue
 export async function GET() {
-  return NextResponse.json({
-    RED: counts.RED,
-    GREEN: counts.GREEN,
-    BLUE: counts.BLUE,
-    YELLOW: counts.YELLOW,
-    total: counts.total,
-    lastColor,
-  }, {
+  if (!lastColor) {
+    return NextResponse.json({ error: "Aucune couleur enregistrée" }, { status: 404 })
+  }
+
+  const response = NextResponse.json({ color: lastColor }, {
     headers: {
       "Cache-Control": "no-cache, no-store, must-revalidate",
       Pragma: "no-cache",
       Expires: "0",
     },
   })
+
+  // Vider après réponse
+  // lastColor = null
+
+  return response
 }

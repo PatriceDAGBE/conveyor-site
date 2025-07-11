@@ -24,24 +24,26 @@ export default function Dashboard() {
   })
 
   const [total, setTotal] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
 
   const fetchData = async () => {
     try {
       const response = await fetch("/api/data")
-      const result = await response.json()
+      const result = await response.json() // Ex: { color: "RED" }
+      const color = result.color?.toUpperCase()
 
-      setData({
-        RED: result.RED || 0,
-        GREEN: result.GREEN || 0,
-        BLUE: result.BLUE || 0,
-        YELLOW: result.YELLOW || 0,
-      })
+      if (!["RED", "GREEN", "BLUE", "YELLOW"].includes(color)) return
 
-      setTotal(result.total || 0)
+      setData((prev) => ({
+        ...prev,
+        [color]: prev[color as keyof DashboardData] + 1,
+      }))
+      setTotal((prev) => prev + 1)
       setLastUpdate(new Date())
+      setIsLoading(false)
     } catch (error) {
-      console.error("Erreur de récupération des données: ", error)
+      console.error("Erreur lors de la récupération des données:", error)
     }
   }
 
@@ -82,8 +84,20 @@ export default function Dashboard() {
     },
   }
 
+  // if (isLoading) {
+  //   return (
+  //     <div className="min-h-screen bg-[#167687] flex items-center justify-center">
+  //       <div className="text-center">
+  //         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+  //         <p className="text-cyan-400 text-lg font-medium">loading...</p>
+  //       </div>
+  //     </div>
+  //   )
+  // }
+
   return (
     <div className="flex flex-col min-h-screen bg-[#167687] text-white">
+      {/* Motif de fond */}
       <div
         className="absolute inset-0 opacity-50"
         style={{
@@ -95,6 +109,7 @@ export default function Dashboard() {
       <DataPulse isActive={false} />
 
       <div className="relative z-10 container mx-auto px-6 py-8 grow">
+        {/* Header */}
         <header className="w-full p-4 flex flex-col items-center text-white">
           <div className="w-full max-w-6xl flex justify-between items-center px-4 mb-4">
             <LogoTRC />
@@ -110,6 +125,7 @@ export default function Dashboard() {
           </div>
         </header>
 
+        {/* KPI Total */}
         <section className="mb-12">
           <div className="grid grid-cols-1 justify-center items-center md:grid-cols-1">
             <KPICard
@@ -121,6 +137,7 @@ export default function Dashboard() {
           </div>
         </section>
 
+        {/* Compteurs */}
         <section>
           <h3 className="text-2xl font-bold text-center mb-8 text-gray-200">
             Counters by Color
