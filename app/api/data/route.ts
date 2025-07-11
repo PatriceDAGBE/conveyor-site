@@ -41,7 +41,7 @@ export async function GET() {
   })
 
   // Vider après réponse
-  // lastColor = null
+  lastColor = null
 
   return response
 }
