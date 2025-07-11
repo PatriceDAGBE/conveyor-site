@@ -84,16 +84,16 @@ export default function Dashboard() {
     },
   }
 
-  // if (isLoading) {
-  //   return (
-  //     <div className="min-h-screen bg-[#167687] flex items-center justify-center">
-  //       <div className="text-center">
-  //         <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-400 mx-auto mb-4"></div>
-  //         <p className="text-cyan-400 text-lg font-medium">loading...</p>
-  //       </div>
-  //     </div>
-  //   )
-  // }
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-[#167687] flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-cyan-400 mx-auto mb-4"></div>
+          <p className="text-cyan-400 text-lg font-medium">loading...</p>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col min-h-screen bg-[#167687] text-white">
@@ -106,7 +106,7 @@ export default function Dashboard() {
         }}
       ></div>
 
-      <DataPulse isActive={false} />
+      <DataPulse isActive={!isLoading} />
 
       <div className="relative z-10 container mx-auto px-6 py-8 grow">
         {/* Header */}
