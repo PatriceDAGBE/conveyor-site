@@ -7,7 +7,7 @@ const LogoTekbot = ({ width = 80, height = 50, showText = true }) => {
       <Link href="/" style={linkStyle}>
         {showText && <span style={textStyle}>Tekbot Robotics</span>}
         <Image
-          src="/logo_tekbot.png"
+          src="/conveyor-site/logo_tekbot.png"
           alt="Tekbot Logo"
           width={width}
           height={height}
