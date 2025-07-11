@@ -98,6 +98,20 @@ export default function Dashboard() {
         <header className="w-full p-4 flex flex-col items-center text-white">
           <div className="w-full max-w-6xl flex justify-between items-center px-4 mb-4">
             <LogoTRC />
+            <button
+              onClick={async () => {
+                try {
+                  await fetch("/api/reset", { method: "POST" })
+                  setData({ RED: 0, GREEN: 0, BLUE: 0, YELLOW: 0 })
+                  setTotal(0)
+                } catch (err) {
+                  console.error("Erreur lors du reset :", err)
+                }
+              }}
+              className="bg-red-600 hover:bg-red-700 text-white text-sm font-medium px-4 py-2 rounded shadow"
+            >
+              Reset
+            </button>
             <LogoTekbot />
           </div>
           <div className="text-center">
@@ -109,6 +123,7 @@ export default function Dashboard() {
             </p>
           </div>
         </header>
+
 
         <section className="mb-12">
           <div className="grid grid-cols-1 justify-center items-center md:grid-cols-1">
