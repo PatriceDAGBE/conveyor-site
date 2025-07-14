@@ -7,14 +7,12 @@ import KPICard from "@/components/kpi-card"
 import DataPulse from "@/components/data-pulse"
 import LogoTekbot from "@/components/LogoTekbot"
 import LogoTRC from "@/components/LogoTRC"
-
-import dynamic from "next/dynamic";
+import dynamic from "next/dynamic"
 
 const PieChartWithCustomizedLabel = dynamic(
   () => import("@/components/PieChartWithCustomizedLabel"),
   { ssr: false }
-);
-
+)
 
 interface DashboardData {
   RED: number
@@ -22,16 +20,6 @@ interface DashboardData {
   BLUE: number
   YELLOW: number
 }
-
-const convertDashboardToChartData = (dashboard: DashboardData) => {
-  return [
-    { name: "RED", value: dashboard.RED },
-    { name: "GREEN", value: dashboard.GREEN },
-    { name: "BLUE", value: dashboard.BLUE },
-    { name: "YELLOW", value: dashboard.YELLOW },
-  ];
-};
-
 
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData>({
@@ -69,6 +57,13 @@ export default function Dashboard() {
     return () => clearInterval(interval)
   }, [])
 
+  const convertDashboardToChartData = (data: DashboardData) => {
+    return Object.entries(data).map(([key, value]) => ({
+      name: key,
+      value,
+    }))
+  }
+
   const colorConfig = {
     RED: {
       name: "RED",
@@ -100,7 +95,7 @@ export default function Dashboard() {
     },
   }
 
-  const chartData = convertDashboardToChartData(data);
+  const chartData = convertDashboardToChartData(data)
 
   return (
     <div className="flex flex-col min-h-screen bg-[#167687] text-white">
@@ -144,19 +139,16 @@ export default function Dashboard() {
           </div>
         </header>
 
-
         <section className="mb-12">
-          <div className="grid grid-cols-1 justify-center items-center md:grid-cols-1">
+          <div className="grid grid-cols-2 justify-center items-center md:grid-cols-2">
             <KPICard
               title="Total Sorted Items"
               value={total}
-              icon={<Target className="h-8 w-8" />}
+              icon={<Target className="h-32 w-8" />}
               color="cyan"
             />
 
-
             <PieChartWithCustomizedLabel data={chartData} />
-            
           </div>
         </section>
 
