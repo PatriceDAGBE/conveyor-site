@@ -8,12 +8,30 @@ import DataPulse from "@/components/data-pulse"
 import LogoTekbot from "@/components/LogoTekbot"
 import LogoTRC from "@/components/LogoTRC"
 
+import dynamic from "next/dynamic";
+
+const PieChartWithCustomizedLabel = dynamic(
+  () => import("@/components/PieChartWithCustomizedLabel"),
+  { ssr: false }
+);
+
+
 interface DashboardData {
   RED: number
   GREEN: number
   BLUE: number
   YELLOW: number
 }
+
+const convertDashboardToChartData = (dashboard: DashboardData) => {
+  return [
+    { name: "RED", value: dashboard.RED },
+    { name: "GREEN", value: dashboard.GREEN },
+    { name: "BLUE", value: dashboard.BLUE },
+    { name: "YELLOW", value: dashboard.YELLOW },
+  ];
+};
+
 
 export default function Dashboard() {
   const [data, setData] = useState<DashboardData>({
@@ -82,6 +100,8 @@ export default function Dashboard() {
     },
   }
 
+  const chartData = convertDashboardToChartData(data);
+
   return (
     <div className="flex flex-col min-h-screen bg-[#167687] text-white">
       <div
@@ -133,6 +153,10 @@ export default function Dashboard() {
               icon={<Target className="h-8 w-8" />}
               color="cyan"
             />
+
+
+            <PieChartWithCustomizedLabel data={chartData} />
+            
           </div>
         </section>
 
